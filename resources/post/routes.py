@@ -1,0 +1,49 @@
+from flask import request
+from uuid import uuid4
+
+from . import bp as app
+from db import posts, users
+
+# post routes
+
+@app.get('/post')
+def get_posts():
+  return { 'posts': list(posts.values()) }
+
+@app.get('/post/<post_id>')
+def get_post(post_id):
+  try:
+    return {'post': posts[post_id]}, 200
+  except KeyError:
+    return {'message': "Invalid Post"}, 400
+
+@app.post('/post')
+def create_post():
+  post_data = request.get_json()
+  user_id = post_data['user_id']
+  if user_id in users:
+    posts[uuid4()] = post_data
+    return { 'message': "Post Created" }, 201
+  return { 'message': "Invalid User"}, 401
+
+@app.put('/post/<post_id>')
+def update_post(post_id):
+  try:
+    post = posts[post_id]
+    post_data = request.get_json()
+    if post_data['user_id'] == post['user_id']:
+      post['title'] = post_data['title']
+      post['weight'] = post_data['weight']
+      post['workout'] = post_data['workout']
+      return { 'message': 'Post Updated' }, 202
+    return {'message': "Unauthorized"}, 401
+  except:
+    return {'message': "Invalid Post Id"}, 400
+
+@app.delete('/post/<post_id>')
+def delete_post(post_id):
+  try:
+    del posts[post_id]
+    return {"message": "Post Deleted"}, 202
+  except:
+    return {'message':"Invalid Post"}, 400
