@@ -10,7 +10,7 @@ class PostModel(db.Model):
     title = db.Column(db.String, nullable = False)
     workout = db.Column(db.String, nullable = False)
     weight = db.Column(db.String, nullable = False)
-    timestamp = db.Column(db.String, default = datetime.utcnow)
+    timestamp = db.Column(db.String, default = datetime.utcnow())
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable = False)
 
     def __repr__(self):
@@ -18,4 +18,8 @@ class PostModel(db.Model):
 
     def commit(self):
         db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
         db.session.commit()
