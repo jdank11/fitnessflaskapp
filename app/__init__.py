@@ -1,10 +1,19 @@
 from flask import Flask
 from flask_smorest import Api 
+from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
+
 from Config import Config
 
 app = Flask(__name__)
 app.config.from_object(Config)
 api = Api(app)
+
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+
+from models.user_models import UserModel
+from models.PostModel import PostModel
 
 from resources.user import bp as user_bp
 api.register_blueprint(user_bp)
