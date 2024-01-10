@@ -5,19 +5,18 @@ from flask_smorest import abort
 
 from models.PostModel import PostModel
 from . import bp as app
-from db import posts, users
 
-from schemas import PostSchema
+from schemas import PostSchema, PostSchemaNested
 
-# post routes
 
 @app.route('/post/<post_id>')
 class Post(MethodView):
   
-  @app.response(200, PostSchema)
+  @app.response(200, PostSchemaNested)
   def get(self, post_id):
     post = PostModel.query.get(post_id)
     if post:
+      print(post.posts.all())
       return post 
     abort(400, message='Invalid Post')
     
@@ -25,10 +24,11 @@ class Post(MethodView):
   def put(self, post_data, post_id):
     post = PostModel.query.get(post_id)
     if post:
-      post['title'] = post_data['title']
-      post['weight'] = post_data['weight']
-      post['workout'] = post_data['workout']
+      post.title = post_data['title']
+      post.weight = post_data['weight']
+      post.workout = post_data['workout']
       post.commit()
+      return{ 'message': 'post updated'}, 201
     return {'message': "Invalid Post Id"}, 400
   
   def delete(self, post_id):
@@ -51,13 +51,13 @@ class PostList(MethodView):
     try:
       post = PostModel()
       post.user_id = post_data['user_id']
-      post['title'] = post_data['title']
-      post['weight'] = post_data['weight']
-      post['workout'] = post_data['workout']
+      post.title = post_data['title']
+      post.weight = post_data['weight']
+      post.workout = post_data['workout']
       post.commit()
       return { 'message': "Post Created" }, 201
     except:
-      abort(401, message = "Invalid User")
+      return{'message' : "Invalid User"}, 401
 
 
 
