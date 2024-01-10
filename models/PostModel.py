@@ -10,7 +10,7 @@ class PostModel(db.Model):
     title = db.Column(db.String, nullable = False)
     workout = db.Column(db.String, nullable = False)
     weight = db.Column(db.String, nullable = False)
-    timestamp = db.Column(db.DateTime, default = datetime.utcnow())
+    timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable = False)
     user = db.relationship('UserModel', back_populates = 'posts')
 
