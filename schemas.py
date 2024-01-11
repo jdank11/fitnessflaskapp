@@ -14,6 +14,7 @@ class PostSchema(Schema):
   workout = fields.Str(required = True)
   weight = fields.Str(required = True)
   timestamp = fields.Str(dump_only = True)
+  user_id = fields.Str(required = True)
 
 class PostSchemaNested(PostSchema):
   user = fields.Nested(UserSchema, dump_only = True)

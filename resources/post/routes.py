@@ -24,6 +24,7 @@ class Post(MethodView):
   def put(self, post_data, post_id):
     post = PostModel.query.get(post_id)
     if post:
+      post.user_id = post_data['user_id']
       post.title = post_data['title']
       post.weight = post_data['weight']
       post.workout = post_data['workout']
