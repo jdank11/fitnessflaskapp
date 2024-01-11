@@ -1,4 +1,4 @@
-.env/
-pp-venv/
-migrations
-_pycache_
+.env/ 
+pp-venv/ 
+migrations 
+_pycache_ 
