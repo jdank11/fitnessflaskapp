@@ -8,6 +8,10 @@ class UserSchema(Schema):
   first_name = fields.Str()
   last_name = fields.Str()
 
+class UserLogin(Schema):
+  username = fields.Str(required = True)
+  password = fields.Str(required = True, load_only = True )
+  
 class PostSchema(Schema):
   id = fields.Str(dump_only = True)
   title = fields.Str(required = True)

@@ -1,5 +1,6 @@
 from flask import request
 from uuid import uuid4
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask.views import MethodView
 from flask_smorest import abort
 
@@ -19,11 +20,12 @@ class Post(MethodView):
       print(post.posts.all())
       return post 
     abort(400, message='Invalid Post')
-    
+
+  @jwt_required()  
   @app.arguments(PostSchema)
   def put(self, post_data, post_id):
     post = PostModel.query.get(post_id)
-    if post:
+    if post and post.user_id == get_jwt_identity():
       post.user_id = post_data['user_id']
       post.title = post_data['title']
       post.weight = post_data['weight']
@@ -32,9 +34,10 @@ class Post(MethodView):
       return{ 'message': 'post updated'}, 201
     return {'message': "Invalid Post Id"}, 400
   
+  @jwt_required()
   def delete(self, post_id):
     post = PostModel.query.get(post_id)
-    if post:
+    if post and post.user_id == get_jwt_identity():
       post.delete()
       return {"message": "Post Deleted"}, 202
     return {'message':"Invalid Post"}, 400
@@ -47,11 +50,12 @@ class PostList(MethodView):
   def get(self):
     return PostModel.query.all()
   
+  @jwt_required()
   @app.arguments(PostSchema)
   def post(self, post_data):
     try:
       post = PostModel()
-      post.user_id = post_data['user_id']
+      post.user_id = get_jwt_identity() 
       post.title = post_data['title']
       post.weight = post_data['weight']
       post.workout = post_data['workout']
