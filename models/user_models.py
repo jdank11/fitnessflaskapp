@@ -45,3 +45,19 @@ class UserModel(db.Model):
                 setattr(self, k, v)
             else:
                 setattr(self, 'password_hash', generate_password_hash(v))
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
+    def is_following(self, user):
+        return user in self.followed
+  
+    def follow(self, user):
+        if self.is_following(user):
+            return
+        self.followed.append(user)
+
+    def unfollow(self,user):
+        if not self.is_following(user):
+            return
+        self.followed.remove(user)               
