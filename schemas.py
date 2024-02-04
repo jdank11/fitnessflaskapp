@@ -7,6 +7,7 @@ class UserSchema(Schema):
   password = fields.Str(required = True, load_only = True )
   first_name = fields.Str()
   last_name = fields.Str()
+  token = fields.Str( dump_only = True )
 
 class UserLogin(Schema):
   username = fields.Str(required = True)
@@ -25,3 +26,4 @@ class PostSchemaNested(PostSchema):
 
 class UserSchemaNested(UserSchema):
   posts = fields.List(fields.Nested(PostSchema), dump_only=True)
+  followed = fields.Function(lambda user: {followed.id: UserSchema().dump(followed) for followed in user.followed} )

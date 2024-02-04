@@ -16,12 +16,15 @@ class User(MethodView):
 
   @app.response(200, UserSchemaNested)  
   def get(self, user_id):
-    user = UserModel.query.get(user_id)
+    user = None
+    if user_id.isdigit():
+      user = UserModel.query.get(user_id)
+    if not user:
+      user = UserModel.query.filter_by(username = user_id).first()
     if user:
-       print(user.posts.all())
-       return user
+      return user
     else:
-       abort(400, message= 'User not found')
+      abort(400, message= 'User not found')
   
   @jwt_required()
   @app.arguments(UserSchema)
