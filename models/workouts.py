@@ -1,21 +1,20 @@
-from datetime import datetime, timezone
 
 from app import db
 
-class PostModel(db.Model):
+class Workouts(db.Model):
 
-    __tablename__ = 'posts'
+    __tablename__ = 'workouts'
 
     id = db.Column(db.Integer, primary_key = True)
-    title = db.Column(db.String, nullable = False)
-    workout = db.Column(db.String, nullable = False)
+    exercise = db.Column(db.String, nullable = False)
     weight = db.Column(db.String, nullable = False)
-    timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
+    reps = db.Column(db.String, nullable = False)
+    notes = db.Column(db.String, nullable = False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable = False)
     user = db.relationship('UserModel', back_populates = 'posts')
 
     def __repr__(self):
-        return f'<Post: {self.title}{self.weight}{self.workout}>'
+        return f'<Post: {self.exercise}{self.weight}{self.reps}{self.notes}>'
 
     def commit(self):
         db.session.add(self)

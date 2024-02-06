@@ -18,7 +18,7 @@ migrate = Migrate(app, db)
 jwt = JWTManager(app)
 
 from models.user_models import UserModel
-from models.PostModel import PostModel
+from models.workouts import Workouts
 
 from resources.user import bp as user_bp
 api.register_blueprint(user_bp)

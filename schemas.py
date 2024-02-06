@@ -15,10 +15,11 @@ class UserLogin(Schema):
   
 class PostSchema(Schema):
   id = fields.Str(dump_only = True)
-  title = fields.Str(required = True)
-  workout = fields.Str(required = True)
+  exercise = fields.Str(required = True)
   weight = fields.Str(required = True)
-  timestamp = fields.Str(dump_only = True)
+  reps = fields.Str(required = True)
+  notes = fields.Str()
+
   
 
 class PostSchemaNested(PostSchema):

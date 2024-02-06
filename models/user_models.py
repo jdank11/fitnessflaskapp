@@ -25,7 +25,7 @@ class UserModel(db.Model):
                             secondaryjoin = followers.c.followed_id == id,
                             backref = db.backref('followers', lazy = 'dynamic')
                             )
-    posts = db.relationship('PostModel',back_populates ='user', lazy='dynamic', cascade= 'all, delete')
+    posts = db.relationship('Workouts',back_populates ='user', lazy='dynamic', cascade= 'all, delete')
 
 
     def __repr__(self):

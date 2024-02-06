@@ -4,7 +4,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask.views import MethodView
 from flask_smorest import abort
 
-from models.PostModel import PostModel
+from models.workouts import Workouts
 from . import bp as app
 
 from schemas import PostSchema, PostSchemaNested
@@ -15,7 +15,7 @@ class Post(MethodView):
   
   @app.response(200, PostSchemaNested)
   def get(self, post_id):
-    post = PostModel.query.get(post_id)
+    post = Workouts.query.get(post_id)
     if post:
       print(post.posts.all())
       return post 
@@ -24,19 +24,19 @@ class Post(MethodView):
   @jwt_required()  
   @app.arguments(PostSchema)
   def put(self, post_data, post_id):
-    post = PostModel.query.get(post_id)
+    post = Workouts.query.get(post_id)
     if post and post.user_id == get_jwt_identity():
-      post.user_id = post_data['user_id']
-      post.title = post_data['title']
+      post.exercise = post_data['exercise']
       post.weight = post_data['weight']
-      post.workout = post_data['workout']
+      post.reps = post_data['reps']
+      post.notes = post_data['notes']
       post.commit()
       return{ 'message': 'post updated'}, 201
     return {'message': "Invalid Post Id"}, 400
   
   @jwt_required()
   def delete(self, post_id):
-    post = PostModel.query.get(post_id)
+    post = Workouts.query.get(post_id)
     if post and post.user_id == get_jwt_identity():
       post.delete()
       return {"message": "Post Deleted"}, 202
@@ -48,17 +48,19 @@ class PostList(MethodView):
   
   @app.response(200, PostSchema(many=True))
   def get(self):
-    return PostModel.query.all()
+    return Workouts.query.all()
   
   @jwt_required()
   @app.arguments(PostSchema)
   def post(self, post_data):
+    print(post_data, '\n\n\n\n')
     try:
-      post = PostModel()
+      post = Workouts()
       post.user_id = get_jwt_identity() 
-      post.title = post_data['title']
+      post.exercise = post_data['exercise']
       post.weight = post_data['weight']
-      post.workout = post_data['workout']
+      post.reps = post_data['reps']
+      post.notes = post_data['notes']
       post.commit()
       return { 'message': "Post Created" }, 201
     except:
